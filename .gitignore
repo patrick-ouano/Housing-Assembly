@@ -17,3 +17,7 @@ Thumbs.db
 
 # N8N
 *.sqlite
+
+# Etc
+etc/
+etc.zip
