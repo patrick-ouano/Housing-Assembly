@@ -23,4 +23,27 @@ function setupMobileNav() {
   });
 }
 
+function setupChatbot() {
+  const toggle = document.getElementById("chatbot-toggle");
+  const close = document.getElementById("chat-close");
+  const chatWindow = document.getElementById("chat-window");
+
+  if (!toggle || !chatWindow) return;
+
+  const toggleChat = () => {
+    const isActive = chatWindow.classList.toggle("is-active");
+    toggle.setAttribute("aria-expanded", String(isActive));
+    chatWindow.setAttribute("aria-hidden", String(!isActive));
+  };
+
+  toggle.addEventListener("click", toggleChat);
+  close?.addEventListener("click", toggleChat);
+
+  // Close on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && chatWindow.classList.contains("is-active")) toggleChat();
+  });
+}
+
 setupMobileNav();
+setupChatbot();
