@@ -54,21 +54,33 @@
 
     <section class="section">
       <div class="container">
-        <h2>Documents &amp; Guides</h2>
-        <ul class="doc-list">
-          <li>
-            <a href="files/resource-list.docx" target="_blank" rel="noopener">Housing Assembly Resource List</a>
-            <span class="doc-list__size">33.58 KB</span>
-          </li>
-          <li>
-            <a href="files/tenants-guide.pdf" target="_blank" rel="noopener">A Tenant's Guide to Rental Housing (2013)</a>
-            <span class="doc-list__size">567.98 KB</span>
-          </li>
-          <li>
-            <a href="files/resisting-evictions.pdf" target="_blank" rel="noopener">Resisting Evictions in South Africa: A Legal and Practical Guide (2015)</a>
-            <span class="doc-list__size">797.18 KB</span>
-          </li>
-        </ul>
+        <h2>Document Library</h2>
+        <p class="library__intro">
+          A growing collection of guides, books, news coverage, and academic
+          research on housing rights and justice in South Africa. Search by
+          keyword or filter by category to find what you need.
+        </p>
+
+        <div id="library">
+          <div class="library__controls">
+            <div class="library__search">
+              <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M505 442.7 405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/></svg>
+              <input type="search" id="library-search" placeholder="Search by title, author, journal…" aria-label="Search the document library">
+            </div>
+            <label class="library__oa">
+              <input type="checkbox" id="library-oa">
+              Open access only
+            </label>
+          </div>
+
+          <div class="library__filters" id="library-filters" role="group" aria-label="Filter by category"></div>
+
+          <p class="library__count" id="library-count" role="status" aria-live="polite"></p>
+
+          <ul class="library__grid" id="library-list"></ul>
+
+          <p class="library__empty" id="library-empty" hidden>No resources match your search. Try a different keyword or category.</p>
+        </div>
       </div>
     </section>
   </main>
@@ -77,5 +89,6 @@
 
   <script src="js/components.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/library.js"></script>
 </body>
 </html>
