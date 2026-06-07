@@ -400,6 +400,247 @@ h3 {
   font-size: 0.85rem;
 }
 
+/* --------------------------------------------------------------------------
+   Resource Library (resources.html, rendered by js/library.js)
+   -------------------------------------------------------------------------- */
+
+.library__intro {
+  max-width: 65ch;
+  color: var(--color-muted);
+  margin-bottom: 1.75rem;
+}
+
+/* Search + open-access toggle row */
+.library__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.library__search {
+  position: relative;
+  flex: 1 1 280px;
+}
+
+.library__search input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.library__search input:focus-visible {
+  outline: 2px solid var(--color-brick);
+  outline-offset: 1px;
+  border-color: var(--color-brick);
+}
+
+.library__search svg {
+  position: absolute;
+  top: 50%;
+  left: 0.9rem;
+  width: 18px;
+  height: 18px;
+  transform: translateY(-50%);
+  fill: var(--color-muted);
+  pointer-events: none;
+}
+
+.library__oa {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.library__oa input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--color-brick);
+  cursor: pointer;
+}
+
+/* Category filter chips */
+.library__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.lib-chip {
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.lib-chip:hover {
+  border-color: var(--color-gold);
+}
+
+.lib-chip.is-active {
+  background: var(--color-brick);
+  border-color: var(--color-brick);
+  color: #fff;
+}
+
+.lib-chip:focus-visible {
+  outline: 2px solid var(--color-brick);
+  outline-offset: 2px;
+}
+
+.library__count {
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+/* Card grid */
+.library__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 1.25rem;
+}
+
+.lib-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-top: 4px solid var(--color-gold);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.lib-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.lib-card__type {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  background: var(--color-bg-alt);
+  color: var(--color-charcoal);
+}
+
+.lib-card__type--guide {
+  background: var(--color-brick);
+  color: #fff;
+}
+
+.lib-card__type--web {
+  background: #2f5d62;
+  color: #fff;
+}
+
+.lib-card__type--book {
+  background: #5b3a86;
+  color: #fff;
+}
+
+.lib-card__type--news {
+  background: var(--color-charcoal);
+  color: #fff;
+}
+
+.lib-card__type--academic {
+  background: var(--color-gold);
+  color: var(--color-charcoal);
+}
+
+.lib-card__oa {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  background: #e7f1e8;
+  color: #2f6b3a;
+  border: 1px solid #bcd8c1;
+}
+
+.lib-card__title {
+  font-size: 1.05rem;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.lib-card__authors {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.lib-card__source {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.lib-card__foot {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.lib-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  color: var(--color-brick);
+}
+
+.lib-card__link:hover {
+  text-decoration: underline;
+}
+
+.lib-card__note {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--color-muted);
+}
+
+.library__empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--color-muted);
+  background: var(--color-bg-alt);
+  border-radius: var(--radius);
+}
+
 /* Responsive iframe embeds (Resources map, Donate campaign) */
 .embed {
   position: relative;
