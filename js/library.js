@@ -45,6 +45,48 @@ const LIBRARY_ITEMS = [
     meta: "PDF · 797.18 KB",
   },
 
+  /* ---- Newsletters (hosted on this site) ------------------------------- */
+  {
+    title: "Housing Assembly Newsletter 1",
+    authors: "The Housing Assembly",
+    year: 2025,
+    source: "Community newsletter",
+    type: "newsletter",
+    category: "Newsletters",
+    url: "files/newsletter-1.pdf",
+    meta: "PDF · 987 KB",
+  },
+  {
+    title: "Housing Assembly Newsletter 2",
+    authors: "The Housing Assembly",
+    year: 2022,
+    source: "Community newsletter",
+    type: "newsletter",
+    category: "Newsletters",
+    url: "files/newsletter-2.pdf",
+    meta: "PDF · 2.61 MB",
+  },
+  {
+    title: "Housing Assembly Newsletter 3",
+    authors: "The Housing Assembly",
+    year: 2025,
+    source: "Community newsletter",
+    type: "newsletter",
+    category: "Newsletters",
+    url: "files/newsletter-3.pdf",
+    meta: "PDF · 1.12 MB",
+  },
+  {
+    title: "Housing Assembly Newsletter 4",
+    authors: "The Housing Assembly",
+    year: 2025,
+    source: "Community newsletter",
+    type: "newsletter",
+    category: "Newsletters",
+    url: "files/newsletter-4.pdf",
+    meta: "PDF · 1.22 MB",
+  },
+
   /* ---- Web resources --------------------------------------------------- */
   {
     title: "Housing — Elitsha",
@@ -1042,6 +1084,7 @@ const LIBRARY_ITEMS = [
 /* Human-readable label for each type, used on the badge. */
 const TYPE_LABELS = {
   guide: "Guide",
+  newsletter: "Newsletter",
   web: "Web Resource",
   book: "Book",
   news: "News Article",
@@ -1051,6 +1094,7 @@ const TYPE_LABELS = {
 /* Order the filter chips appear in. */
 const CATEGORY_ORDER = [
   "Housing Assembly Guides",
+  "Newsletters",
   "Web Resources",
   "Books (City of Cape Town Libraries)",
   "In the News",
@@ -1109,7 +1153,7 @@ function setupLibrary() {
 
     const action = href
       ? `<a class="lib-card__link" href="${escapeAttr(href)}" target="_blank" rel="noopener">${
-          item.type === "guide" ? "Download" : "View"
+          item.type === "guide" || item.type === "newsletter" ? "Download" : "View"
           } <span aria-hidden="true">&rarr;</span></a>`
       : `<span class="lib-card__note">${escapeHtml(item.note || "Reference only")}</span>`;
 

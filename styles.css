@@ -556,6 +556,11 @@ h3 {
   color: #fff;
 }
 
+.lib-card__type--newsletter {
+  background: #8b3a2f;
+  color: #fff;
+}
+
 .lib-card__type--web {
   background: #2f5d62;
   color: #fff;
