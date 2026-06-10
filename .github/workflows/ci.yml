@@ -6,7 +6,7 @@ on:
     branches: [main]
   push:
     branches: [main]
-    
+
 # jobs to run in pipeline 
 jobs:
   check:
@@ -30,14 +30,12 @@ jobs:
           node --check js/library.js
 
       - name: Validate HTML
-        uses: html-validate/html-validate-action@v1
-        with:
-          pattern: "*.html"
-          config: |
-            {
-              "extends": ["html-validate:recommended"],
-              "rules": {
-                "no-inline-style": "off",
-                "require-sri": "off"
-              }
+        run: |
+          npm install -g html-validate
+          html-validate "*.html" --config '{
+            "extends": ["html-validate:recommended"],
+            "rules": {
+              "no-inline-style": "off",
+              "require-sri": "off"
             }
+          }'
