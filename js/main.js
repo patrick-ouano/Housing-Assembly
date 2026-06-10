@@ -45,6 +45,70 @@ function setupChatbot() {
   });
 
   setupSpeechToText(chatWindow);
+  setupChatMessaging(chatWindow);
+}
+
+/* Replace with the real n8n webhook URL once it's set up. */
+const N8N_WEBHOOK_URL = "https://your-n8n-instance.example.com/webhook/your-webhook-id";
+
+/* Sends typed/dictated messages to the n8n webhook and shows the reply. */
+function setupChatMessaging(chatWindow) {
+  const body = chatWindow.querySelector(".chat-window__body");
+  const input = chatWindow.querySelector(".chat-window__footer input");
+  const sendBtn = chatWindow.querySelector(".chat-window__send");
+
+  if (!body || !input || !sendBtn) return;
+
+  /* Build a message bubble, add it to the chat, and keep the view scrolled down. */
+  const addMessage = (text, sender) => {
+    const bubble = document.createElement("p");
+    bubble.className = sender === "user" ? "chat-msg chat-msg--user" : "chat-msg";
+    bubble.textContent = text;
+    body.appendChild(bubble);
+    body.scrollTop = body.scrollHeight;
+    return bubble;
+  };
+
+  const handleSend = async () => {
+    const message = input.value.trim();
+    if (message === "") return;
+
+    addMessage(message, "user");
+    input.value = "";
+    input.focus();
+
+    // Temporary placeholder shown until the webhook responds.
+    const pending = addMessage("Assembly Bot is typing…", "bot");
+    pending.classList.add("chat-msg--pending");
+
+    try {
+      const response = await fetch(N8N_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+
+      if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+
+      const data = await response.json();
+      pending.classList.remove("chat-msg--pending");
+      pending.textContent = data.reply ?? "Sorry, I didn't get a response.";
+    } catch (error) {
+      pending.classList.remove("chat-msg--pending");
+      pending.textContent = "Sorry, something went wrong. Please try again.";
+    } finally {
+      body.scrollTop = body.scrollHeight;
+    }
+  };
+
+  sendBtn.addEventListener("click", handleSend);
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSend();
+    }
+  });
 }
 
 /* Speech-to-text: dictate into the chat input using the Web Speech API. */

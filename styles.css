@@ -865,15 +865,36 @@ h3 {
   padding: 1.25rem;
   overflow-y: auto;
   background: var(--color-bg-alt);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .chat-msg {
+  margin: 0;
+  align-self: flex-start;
   background: #fff;
   padding: 0.75rem;
   border-radius: 0 12px 12px 12px;
   font-size: 0.9rem;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
   max-width: 85%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Messages sent by the user, aligned to the right in the site's brick red */
+.chat-msg--user {
+  align-self: flex-end;
+  background: var(--color-brick);
+  color: #fff;
+  border-radius: 12px 12px 0 12px;
+}
+
+/* "Assembly Bot is typing..." placeholder while waiting for the webhook */
+.chat-msg--pending {
+  color: var(--color-muted);
+  font-style: italic;
 }
 
 .chat-window__footer {
