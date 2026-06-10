@@ -30,12 +30,4 @@ jobs:
           node --check js/library.js
 
       - name: Validate HTML
-        run: |
-          npm install -g html-validate
-          html-validate "*.html" --config '{
-            "extends": ["html-validate:recommended"],
-            "rules": {
-              "no-inline-style": "off",
-              "require-sri": "off"
-            }
-          }'
+        run: npx --yes html-validate "*.html"
