@@ -36,7 +36,7 @@ function renderHeader() {
   return `
     <div class="container site-header__inner">
       <a class="brand" href="index.html">
-        <img src="images/logo.jpg" alt="The Housing Assembly logo" width="52" height="52">
+        <img src="images/logo.png" alt="The Housing Assembly logo" width="52" height="52">
         <span class="brand__name">The Housing<br>Assembly</span>
       </a>
       <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="primary-nav" aria-expanded="false">
@@ -53,7 +53,7 @@ function renderFooter() {
   return `
     <div class="container site-footer__cols">
       <div>
-        <img class="site-footer__logo" src="images/logo.jpg" alt="The Housing Assembly logo">
+        <img class="site-footer__logo" src="images/logo.png" alt="The Housing Assembly logo">
         <p>Housing justice for the Western Cape since 2009.</p>
       </div>
       <div>

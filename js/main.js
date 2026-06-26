@@ -49,7 +49,11 @@ function setupChatbot() {
 }
 
 /* Replace with the real n8n webhook URL once it's set up. */
+<<<<<<< HEAD
 const N8N_WEBHOOK_URL = "https://your-n8n-instance.example.com/webhook/your-webhook-id";
+=======
+const N8N_WEBHOOK_URL = "http://localhost:5678/webhook/ff78618a-90f7-474a-a205-2c718800f7dd";
+>>>>>>> 7291e7e17d3f97e7b8475aa3da22c65438e0e68c
 
 /* Sends typed/dictated messages to the n8n webhook and shows the reply. */
 function setupChatMessaging(chatWindow) {
