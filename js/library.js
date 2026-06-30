@@ -10,7 +10,10 @@
    url      -> direct link (web pages, news, downloads, open-access articles)
    doi      -> digital object identifier; turned into a https://doi.org/ link
    oa       -> true for open-access academic articles (bold in the source doc)
-   note     -> shown instead of a link (e.g. library-only books)            */
+   note     -> shown instead of a link when there is no url or doi
+   linkLabel-> custom text for the action link (optional)                   */
+
+const COCT_LIBRARY_OPAC = "https://opac.capetown.gov.za";
 
 const LIBRARY_ITEMS = [
   /* ---- Housing Assembly guides (hosted on this site) ------------------- */
@@ -43,6 +46,48 @@ const LIBRARY_ITEMS = [
     category: "Housing Assembly Guides",
     url: "files/resisting-evictions.pdf",
     meta: "PDF · 797.18 KB",
+  },
+
+  /* ---- Newsletters (hosted on this site) ------------------------------- */
+  {
+    title: "Housing Assembly Newsletter 1",
+    authors: "The Housing Assembly",
+    year: 2025,
+    source: "Community newsletter",
+    type: "newsletter",
+    category: "Newsletters",
+    url: "files/newsletter-1.pdf",
+    meta: "PDF · 987 KB",
+  },
+  {
+    title: "Housing Assembly Newsletter 2",
+    authors: "The Housing Assembly",
+    year: 2022,
+    source: "Community newsletter",
+    type: "newsletter",
+    category: "Newsletters",
+    url: "files/newsletter-2.pdf",
+    meta: "PDF · 2.61 MB",
+  },
+  {
+    title: "Housing Assembly Newsletter 3",
+    authors: "The Housing Assembly",
+    year: 2025,
+    source: "Community newsletter",
+    type: "newsletter",
+    category: "Newsletters",
+    url: "files/newsletter-3.pdf",
+    meta: "PDF · 1.12 MB",
+  },
+  {
+    title: "Housing Assembly Newsletter 4",
+    authors: "The Housing Assembly",
+    year: 2025,
+    source: "Community newsletter",
+    type: "newsletter",
+    category: "Newsletters",
+    url: "files/newsletter-4.pdf",
+    meta: "PDF · 1.22 MB",
   },
 
   /* ---- Web resources --------------------------------------------------- */
@@ -100,7 +145,8 @@ const LIBRARY_ITEMS = [
     source: "Chicago: The University of Chicago Press",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "Cities with 'slums': from informal settlement eradication to a right to the city in Africa",
@@ -109,7 +155,8 @@ const LIBRARY_ITEMS = [
     source: "Claremont, Cape Town: UCT Press",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "No land! No house! No vote!: voices from Symphony Way",
@@ -118,7 +165,8 @@ const LIBRARY_ITEMS = [
     source: "Cape Town: Pambazuka Press",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "Making freedom: apartheid, squatter politics, and the struggle for home",
@@ -127,7 +175,8 @@ const LIBRARY_ITEMS = [
     source: "Durham: Duke University Press",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "Street law: practical law for South African students — V.5, welfare and housing law",
@@ -136,7 +185,8 @@ const LIBRARY_ITEMS = [
     source: "South Africa: Juta and Company",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "Landlord and tenant: rights and obligations",
@@ -145,7 +195,8 @@ const LIBRARY_ITEMS = [
     source: "South Africa: LexisNexis",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "No place to rest: forced removals and the law in South Africa — selected papers",
@@ -154,7 +205,8 @@ const LIBRARY_ITEMS = [
     source: "Cape Town: Oxford University Press & Labour Law Unit, UCT",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "Amakomiti: grassroots democracy in South African shack settlements",
@@ -172,7 +224,8 @@ const LIBRARY_ITEMS = [
     source: "Cape Town: Periperi Publications",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "Impossible return: Cape Town's forced removals",
@@ -181,7 +234,8 @@ const LIBRARY_ITEMS = [
     source: "Cape Town: Kwela Books",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "The surplus people: forced removals in South Africa",
@@ -190,7 +244,8 @@ const LIBRARY_ITEMS = [
     source: "Johannesburg: Ravan Press",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "A place to live: gender research on housing in Africa",
@@ -199,7 +254,8 @@ const LIBRARY_ITEMS = [
     source: "Uppsala: Nordiska Afrikainstitutet",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "Jobs from housing: employment, building materials, and enabling strategies for urban development",
@@ -208,7 +264,8 @@ const LIBRARY_ITEMS = [
     source: "London: Intermediate Technology",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "Forced removal: the division, segregation, and control of the people of South Africa",
@@ -217,7 +274,8 @@ const LIBRARY_ITEMS = [
     source: "London: International Defence and Aid Fund for Southern Africa",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "It feels like it's the end of the world: Cape Town's youth talk about gangs and community violence",
@@ -226,7 +284,8 @@ const LIBRARY_ITEMS = [
     source: "Tshwane: Institute for Security Studies",
     type: "book",
     category: "Books (City of Cape Town Libraries)",
-    note: "Available at City of Cape Town libraries",
+    url: COCT_LIBRARY_OPAC,
+    linkLabel: "Check location and availability in CoCT Libraries",
   },
   {
     title: "Hostels in South Africa: spaces of perplexity",
@@ -1042,6 +1101,7 @@ const LIBRARY_ITEMS = [
 /* Human-readable label for each type, used on the badge. */
 const TYPE_LABELS = {
   guide: "Guide",
+  newsletter: "Newsletter",
   web: "Web Resource",
   book: "Book",
   news: "News Article",
@@ -1051,6 +1111,7 @@ const TYPE_LABELS = {
 /* Order the filter chips appear in. */
 const CATEGORY_ORDER = [
   "Housing Assembly Guides",
+  "Newsletters",
   "Web Resources",
   "Books (City of Cape Town Libraries)",
   "In the News",
@@ -1107,10 +1168,14 @@ function setupLibrary() {
       `<span class="lib-card__type lib-card__type--${item.type}">${TYPE_LABELS[item.type] || item.type}</span>` +
       (item.oa ? `<span class="lib-card__oa">Open access</span>` : "");
 
+    const linkText =
+      item.linkLabel ||
+      (item.type === "guide" || item.type === "newsletter" ? "Download" : "View");
+
     const action = href
-      ? `<a class="lib-card__link" href="${escapeAttr(href)}" target="_blank" rel="noopener">${
-          item.type === "guide" ? "Download" : "View"
-          } <span aria-hidden="true">&rarr;</span></a>`
+      ? `<a class="lib-card__link" href="${escapeAttr(href)}" target="_blank" rel="noopener">${escapeHtml(
+          linkText
+        )} <span aria-hidden="true">&rarr;</span></a>`
       : `<span class="lib-card__note">${escapeHtml(item.note || "Reference only")}</span>`;
 
     return `
