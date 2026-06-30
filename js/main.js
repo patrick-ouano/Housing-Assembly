@@ -51,6 +51,35 @@ function setupChatbot() {
 /* Replace with the real n8n webhook URL once it's set up. */
 const N8N_WEBHOOK_URL = "http://localhost:5678/webhook/ff78618a-90f7-474a-a205-2c718800f7dd";
 
+/* sessionStorage keys: continuity lasts for the browsing session (across page
+   navigations in the same tab) and clears when the tab is closed. */
+const SESSION_ID_KEY = "assembly-bot-session";
+const TRANSCRIPT_KEY = "assembly-bot-transcript";
+
+/* Stable per-visitor id so n8n's memory can tie messages to one conversation. */
+function getSessionId() {
+  let id = sessionStorage.getItem(SESSION_ID_KEY);
+  if (!id) {
+    id = crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    sessionStorage.setItem(SESSION_ID_KEY, id);
+  }
+  return id;
+}
+
+function loadTranscript() {
+  try {
+    return JSON.parse(sessionStorage.getItem(TRANSCRIPT_KEY)) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+function saveTranscript(history) {
+  sessionStorage.setItem(TRANSCRIPT_KEY, JSON.stringify(history));
+}
+
 /* Sends typed/dictated messages to the n8n webhook and shows the reply. */
 function setupChatMessaging(chatWindow) {
   const body = chatWindow.querySelector(".chat-window__body");
@@ -58,6 +87,9 @@ function setupChatMessaging(chatWindow) {
   const sendBtn = chatWindow.querySelector(".chat-window__send");
 
   if (!body || !input || !sendBtn) return;
+
+  const sessionId = getSessionId();
+  const history = loadTranscript();
 
   /* Build a message bubble, add it to the chat, and keep the view scrolled down. */
   const addMessage = (text, sender) => {
@@ -69,11 +101,21 @@ function setupChatMessaging(chatWindow) {
     return bubble;
   };
 
+  /* Persist a finalised message so it reappears after navigating pages. */
+  const record = (text, sender) => {
+    history.push({ text, sender });
+    saveTranscript(history);
+  };
+
+  // Replay this session's earlier messages below the static welcome line.
+  history.forEach((entry) => addMessage(entry.text, entry.sender));
+
   const handleSend = async () => {
     const message = input.value.trim();
     if (message === "") return;
 
     addMessage(message, "user");
+    record(message, "user");
     input.value = "";
     input.focus();
 
@@ -85,14 +127,16 @@ function setupChatMessaging(chatWindow) {
       const response = await fetch(N8N_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, sessionId }),
       });
 
       if (!response.ok) throw new Error(`Request failed: ${response.status}`);
 
       const data = await response.json();
+      const reply = data.reply ?? "Sorry, I didn't get a response.";
       pending.classList.remove("chat-msg--pending");
-      pending.textContent = data.reply ?? "Sorry, I didn't get a response.";
+      pending.textContent = reply;
+      record(reply, "bot");
     } catch (error) {
       pending.classList.remove("chat-msg--pending");
       pending.textContent = "Sorry, something went wrong. Please try again.";
