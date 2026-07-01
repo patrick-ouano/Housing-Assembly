@@ -108,11 +108,26 @@ function setupChatMessaging(chatWindow) {
   const sessionId = getSessionId();
   const history = loadTranscript();
 
+  /* Fill a bubble: user text stays literal (safe), while bot replies render
+     Markdown, sanitised with DOMPurify to strip unsafe HTML before it hits
+     the DOM. Falls back to plain text if the libraries fail to load. */
+  const setBubbleContent = (bubble, text, sender) => {
+    if (sender !== "user" && window.marked && window.DOMPurify) {
+      bubble.classList.add("chat-msg--rich");
+      bubble.innerHTML = window.DOMPurify.sanitize(
+        window.marked.parse(text, { breaks: true })
+      );
+    } else {
+      bubble.classList.remove("chat-msg--rich");
+      bubble.textContent = text;
+    }
+  };
+
   /* Build a message bubble, add it to the chat, and keep the view scrolled down. */
   const addMessage = (text, sender) => {
-    const bubble = document.createElement("p");
+    const bubble = document.createElement("div");
     bubble.className = sender === "user" ? "chat-msg chat-msg--user" : "chat-msg";
-    bubble.textContent = text;
+    setBubbleContent(bubble, text, sender);
     body.appendChild(bubble);
     body.scrollTop = body.scrollHeight;
     return bubble;
@@ -152,7 +167,7 @@ function setupChatMessaging(chatWindow) {
       const data = await response.json();
       const reply = data.reply ?? "Sorry, I didn't get a response.";
       pending.classList.remove("chat-msg--pending");
-      pending.textContent = reply;
+      setBubbleContent(pending, reply, "bot");
       record(reply, "bot");
     } catch (error) {
       pending.classList.remove("chat-msg--pending");
