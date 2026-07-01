@@ -392,10 +392,10 @@ const LIBRARY_ITEMS = [
     title: "Crucial decision: Cape Town's Tafelberg case goes to ConCourt — activists call for coordinated affordable housing plan",
     authors: "Metelerkamp, T.",
     year: 2025,
-    source: "Daily Maverick (via NexisUni)",
+    source: "Daily Maverick",
     type: "news",
     category: "In the News",
-    note: "Available via the NexisUni database",
+    url: "https://www.dailymaverick.co.za/article/2025-02-11-cape-towns-tafelberg-case-goes-to-concourt-activists-call-for-coordinated-affordable-housing-plan/",
   },
   {
     title: "So you really want to talk about land expropriation?",
