@@ -49,12 +49,27 @@ function setupChatbot() {
 }
 
 /* Replace with the real n8n webhook URL once it's set up. */
-const N8N_WEBHOOK_URL = "http://localhost:5678/webhook/ff78618a-90f7-474a-a205-2c718800f7dd";
+const N8N_WEBHOOK_URL = "https://n8n-production-3a960.up.railway.app/webhook/ff78618a-90f7-474a-a205-2c718800f7dd";
 
 /* sessionStorage keys: continuity lasts for the browsing session (across page
    navigations in the same tab) and clears when the tab is closed. */
-const SESSION_ID_KEY = "assembly-bot-session";
-const TRANSCRIPT_KEY = "assembly-bot-transcript";
+const SESSION_ID_KEY = "michael-blake-session";
+const TRANSCRIPT_KEY = "michael-blake-transcript";
+const UPDATED_AT_KEY = "michael-blake-updated";
+
+/* Reset the conversation after this much idle time so old chats don't reappear. */
+const IDLE_TTL_MS = 30 * 60 * 1000;
+
+/* If the last activity is older than the TTL, wipe the session id and transcript
+   so both the UI and n8n's memory (keyed by session id) start fresh. */
+function expireIfStale() {
+  const last = Number(sessionStorage.getItem(UPDATED_AT_KEY) || 0);
+  if (last && Date.now() - last > IDLE_TTL_MS) {
+    sessionStorage.removeItem(SESSION_ID_KEY);
+    sessionStorage.removeItem(TRANSCRIPT_KEY);
+    sessionStorage.removeItem(UPDATED_AT_KEY);
+  }
+}
 
 /* Stable per-visitor id so n8n's memory can tie messages to one conversation. */
 function getSessionId() {
@@ -78,6 +93,7 @@ function loadTranscript() {
 
 function saveTranscript(history) {
   sessionStorage.setItem(TRANSCRIPT_KEY, JSON.stringify(history));
+  sessionStorage.setItem(UPDATED_AT_KEY, String(Date.now()));
 }
 
 /* Sends typed/dictated messages to the n8n webhook and shows the reply. */
@@ -88,14 +104,30 @@ function setupChatMessaging(chatWindow) {
 
   if (!body || !input || !sendBtn) return;
 
+  expireIfStale();
   const sessionId = getSessionId();
   const history = loadTranscript();
 
+  /* Fill a bubble: user text stays literal (safe), while bot replies render
+     Markdown, sanitised with DOMPurify to strip unsafe HTML before it hits
+     the DOM. Falls back to plain text if the libraries fail to load. */
+  const setBubbleContent = (bubble, text, sender) => {
+    if (sender !== "user" && window.marked && window.DOMPurify) {
+      bubble.classList.add("chat-msg--rich");
+      bubble.innerHTML = window.DOMPurify.sanitize(
+        window.marked.parse(text, { breaks: true })
+      );
+    } else {
+      bubble.classList.remove("chat-msg--rich");
+      bubble.textContent = text;
+    }
+  };
+
   /* Build a message bubble, add it to the chat, and keep the view scrolled down. */
   const addMessage = (text, sender) => {
-    const bubble = document.createElement("p");
+    const bubble = document.createElement("div");
     bubble.className = sender === "user" ? "chat-msg chat-msg--user" : "chat-msg";
-    bubble.textContent = text;
+    setBubbleContent(bubble, text, sender);
     body.appendChild(bubble);
     body.scrollTop = body.scrollHeight;
     return bubble;
@@ -120,7 +152,7 @@ function setupChatMessaging(chatWindow) {
     input.focus();
 
     // Temporary placeholder shown until the webhook responds.
-    const pending = addMessage("Assembly Bot is typing…", "bot");
+    const pending = addMessage("Michael Blake is typing…", "bot");
     pending.classList.add("chat-msg--pending");
 
     try {
@@ -135,7 +167,7 @@ function setupChatMessaging(chatWindow) {
       const data = await response.json();
       const reply = data.reply ?? "Sorry, I didn't get a response.";
       pending.classList.remove("chat-msg--pending");
-      pending.textContent = reply;
+      setBubbleContent(pending, reply, "bot");
       record(reply, "bot");
     } catch (error) {
       pending.classList.remove("chat-msg--pending");
