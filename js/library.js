@@ -199,7 +199,6 @@ async function setupLibrary() {
 
   const searchInput = root.querySelector("#library-search");
   const chipWrap = root.querySelector("#library-filters");
-  const oaToggle = root.querySelector("#library-oa");
   const list = root.querySelector("#library-list");
   const count = root.querySelector("#library-count");
   const empty = root.querySelector("#library-empty");
@@ -291,11 +290,9 @@ async function setupLibrary() {
 
   function render() {
     const term = searchInput.value.trim().toLowerCase();
-    const oaOnly = oaToggle.checked;
 
     const matches = allItems.filter((item) => {
       if (activeCategory !== "all" && item.category !== activeCategory) return false;
-      if (oaOnly && !item.oa) return false;
       if (!term) return true;
       const haystack = [
         item.title,
@@ -331,7 +328,6 @@ async function setupLibrary() {
   });
 
   searchInput.addEventListener("input", render);
-  oaToggle.addEventListener("change", render);
 
   render();
 }
