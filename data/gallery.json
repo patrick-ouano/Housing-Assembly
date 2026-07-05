@@ -1,0 +1,12 @@
+[
+  { "id": "gallery-1", "src": "images/gallery-1.jpg", "title": "Athlone District Leaders", "description": "" },
+  { "id": "gallery-2", "src": "images/gallery-2.jpg", "title": "Community gathering", "description": "" },
+  { "id": "gallery-3", "src": "images/gallery-3.jpg", "title": "Housing Assembly members", "description": "" },
+  { "id": "gallery-4", "src": "images/gallery-4.jpg", "title": "Community organising", "description": "" },
+  { "id": "gallery-5", "src": "images/gallery-5.jpg", "title": "Housing Assembly event", "description": "" },
+  { "id": "gallery-6", "src": "images/gallery-6.jpg", "title": "Members at a meeting", "description": "" },
+  { "id": "gallery-7", "src": "images/gallery-7.jpg", "title": "Community action", "description": "" },
+  { "id": "gallery-8", "src": "images/gallery-8.jpg", "title": "Housing Assembly gathering", "description": "" },
+  { "id": "gallery-9", "src": "images/gallery-9.jpg", "title": "Members organising together", "description": "" },
+  { "id": "gallery-10", "src": "images/gallery-10.jpg", "title": "Community event", "description": "" }
+]

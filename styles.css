@@ -533,6 +533,20 @@ h3 {
   box-shadow: var(--shadow);
 }
 
+.lib-card__cover {
+  margin: -1.25rem -1.4rem 0.4rem;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.lib-card__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .lib-card__badges {
   display: flex;
   flex-wrap: wrap;
@@ -579,6 +593,11 @@ h3 {
 .lib-card__type--academic {
   background: var(--color-gold);
   color: var(--color-charcoal);
+}
+
+.lib-card__type--community {
+  background: #3a7d44;
+  color: #fff;
 }
 
 .lib-card__oa {
@@ -729,10 +748,22 @@ h3 {
   display: flex;
 }
 
+.lightbox__figure {
+  margin: 0;
+  max-width: 90vw;
+}
+
 .lightbox__img {
   max-width: 90vw;
   max-height: 85vh;
   border-radius: var(--radius);
+}
+
+.lightbox__caption {
+  margin-top: 0.75rem;
+  color: #fff;
+  text-align: center;
+  font-size: 0.95rem;
 }
 
 .lightbox__close {

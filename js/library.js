@@ -1106,9 +1106,12 @@ const TYPE_LABELS = {
   book: "Book",
   news: "News Article",
   academic: "Academic Article",
+  community: "Community Submission",
 };
 
-/* Order the filter chips appear in. */
+/* Order the filter chips appear in. New categories submitted via the Google
+   Form's Category dropdown (see buildCategoryList) are appended after these,
+   with "Uncategorized" always pinned last. */
 const CATEGORY_ORDER = [
   "Housing Assembly Guides",
   "Newsletters",
@@ -1122,7 +1125,98 @@ const CATEGORY_ORDER = [
   "Related Issues",
 ];
 
-function setupLibrary() {
+/* Submissions come from a Google Form whose responses land in a Google
+   Sheet. The Sheet is fetched live via the gviz/tq endpoint (no API key,
+   no backend) and mapped onto the same item shape as LIBRARY_ITEMS so they
+   render through the existing card/filter logic without special-casing.
+   The Sheet must be shared "Anyone with the link can view". */
+const LIBRARY_SHEET_ID = "1uzVgUCPU_OOqyd0v7p15Xgeeq0lotIRG3ZZDK2XEhu0";
+const LIBRARY_SHEET_NAME = "Document Insertion Form (HA) (Responses)";
+const LIBRARY_SHEET_GVIZ_URL =
+  `https://docs.google.com/spreadsheets/d/${LIBRARY_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(
+    LIBRARY_SHEET_NAME
+  )}`;
+
+async function loadSheetSubmissions() {
+  const response = await fetch(LIBRARY_SHEET_GVIZ_URL);
+  if (!response.ok) throw new Error(`Failed to load Sheet: ${response.status}`);
+  const text = await response.text();
+
+  /* gviz wraps its JSON payload in a JS function call:
+     google.visualization.Query.setResponse({...}); */
+  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?\s*$/);
+  if (!match) throw new Error("Unexpected gviz response format");
+  const payload = JSON.parse(match[1]);
+
+  if (payload.status === "error") {
+    throw new Error(
+      `gviz error: ${(payload.errors || []).map((e) => e.detailed_message || e.message).join("; ")}`
+    );
+  }
+
+  const cols = payload.table.cols.map((c) => (c.label || "").trim());
+  const rows = payload.table.rows || [];
+
+  return rows
+    .map((row) => sheetRowToObject(cols, row))
+    .filter((obj) => obj["Title"])
+    .map(mapSheetRowToItem);
+}
+
+/* Convert a gviz row (array of {v, f} cells) into a plain object keyed by
+   column header, using the formatted value when present. */
+function sheetRowToObject(cols, row) {
+  const obj = {};
+  cols.forEach((label, i) => {
+    const cell = row.c[i];
+    obj[label] = cell ? cell.f ?? cell.v ?? "" : "";
+  });
+  return obj;
+}
+
+/* Maps one Sheet row (keyed by the Google Form's exact question titles)
+   onto the LIBRARY_ITEMS item shape. */
+function mapSheetRowToItem(row) {
+  const title = String(row["Title"] || "").trim();
+  const authors = String(row["Author / Source"] || "").trim();
+  const yearRaw = String(row["Year"] || "").trim();
+  const year = /^\d{4}$/.test(yearRaw) ? Number(yearRaw) : null;
+  const description = String(row["Short Description"] || "").trim();
+  const categoryRaw = String(row["Category"] || "").trim();
+  const category = categoryRaw || "Uncategorized";
+
+  /* File-or-link branching: Forms writes the uploaded file's Drive link into
+     "Document Upload", or a pasted URL into "Document Link" - exactly one
+     should be populated per the form's required branching. */
+  const fileUrl = String(row["Document Upload"] || "").trim();
+  const linkUrl = String(row["Document Link"] || "").trim();
+  const url = fileUrl || linkUrl || null;
+
+  const coverRaw = String(row["Cover Image"] || "").trim();
+  const cover = coverRaw ? driveFileUrlToEmbeddable(coverRaw) : null;
+
+  return {
+    title,
+    authors,
+    year,
+    source: description,
+    type: "community",
+    category,
+    url,
+    cover,
+  };
+}
+
+/* A Drive "view" share link (drive.google.com/file/d/<ID>/view) does not
+   render inside <img src>; rewrite it to a direct, embeddable form using
+   the Drive file ID. Returns null if no file ID can be extracted. */
+function driveFileUrlToEmbeddable(driveUrl) {
+  const match = driveUrl.match(/\/file\/d\/([^/]+)/) || driveUrl.match(/[?&]id=([^&]+)/);
+  if (!match) return null;
+  return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+}
+
+async function setupLibrary() {
   const root = document.getElementById("library");
   if (!root) return;
 
@@ -1134,11 +1228,39 @@ function setupLibrary() {
   const empty = root.querySelector("#library-empty");
 
   let activeCategory = "all";
+  let allItems = LIBRARY_ITEMS;
 
-  /* Build the filter chips: All + one per category that has items. */
-  const presentCategories = CATEGORY_ORDER.filter((cat) =>
-    LIBRARY_ITEMS.some((item) => item.category === cat)
-  );
+  try {
+    const submissions = await loadSheetSubmissions();
+    allItems = LIBRARY_ITEMS.concat(submissions);
+  } catch (error) {
+    console.error(error);
+  }
+
+  /* Build the filter chips: All + curated categories (fixed order) + any
+     new category values submitted via the Form's Category dropdown +
+     "Uncategorized" pinned last. */
+  function buildCategoryList(items) {
+    const seen = new Set();
+    const dynamic = [];
+    items.forEach((item) => {
+      const cat = item.category;
+      if (cat === "Uncategorized") return;
+      if (CATEGORY_ORDER.includes(cat)) return;
+      if (seen.has(cat)) return;
+      seen.add(cat);
+      dynamic.push(cat);
+    });
+    dynamic.sort((a, b) => a.localeCompare(b));
+
+    const hasUncategorized = items.some((item) => item.category === "Uncategorized");
+
+    return CATEGORY_ORDER.filter((cat) => items.some((item) => item.category === cat))
+      .concat(dynamic)
+      .concat(hasUncategorized ? ["Uncategorized"] : []);
+  }
+
+  const presentCategories = buildCategoryList(allItems);
 
   const chips = [{ value: "all", label: "All" }].concat(
     presentCategories.map((cat) => ({ value: cat, label: cat }))
@@ -1163,6 +1285,12 @@ function setupLibrary() {
     const href = linkFor(item);
     const yearText = item.year ? ` &middot; ${item.year}` : "";
     const metaLine = item.meta || item.source || "";
+    const authorsLine = item.authors || item.year
+      ? `<p class="lib-card__authors">${escapeHtml(item.authors)}${yearText}</p>`
+      : "";
+    const coverHtml = item.cover
+      ? `<div class="lib-card__cover"><img src="${escapeAttr(item.cover)}" alt="" loading="lazy"></div>`
+      : "";
 
     const badges =
       `<span class="lib-card__type lib-card__type--${item.type}">${TYPE_LABELS[item.type] || item.type}</span>` +
@@ -1180,9 +1308,10 @@ function setupLibrary() {
 
     return `
       <li class="lib-card" data-type="${item.type}">
+        ${coverHtml}
         <div class="lib-card__badges">${badges}</div>
         <h3 class="lib-card__title">${escapeHtml(item.title)}</h3>
-        <p class="lib-card__authors">${escapeHtml(item.authors)}${yearText}</p>
+        ${authorsLine}
         ${metaLine ? `<p class="lib-card__source">${escapeHtml(metaLine)}</p>` : ""}
         <div class="lib-card__foot">${action}</div>
       </li>`;
@@ -1192,7 +1321,7 @@ function setupLibrary() {
     const term = searchInput.value.trim().toLowerCase();
     const oaOnly = oaToggle.checked;
 
-    const matches = LIBRARY_ITEMS.filter((item) => {
+    const matches = allItems.filter((item) => {
       if (activeCategory !== "all" && item.category !== activeCategory) return false;
       if (oaOnly && !item.oa) return false;
       if (!term) return true;
@@ -1211,7 +1340,7 @@ function setupLibrary() {
 
     list.innerHTML = matches.map(cardHtml).join("");
 
-    const total = LIBRARY_ITEMS.length;
+    const total = allItems.length;
     count.textContent = matches.length === total
       ? `Showing all ${total} resources`
       : `Showing ${matches.length} of ${total} resources`;
