@@ -1130,8 +1130,8 @@ const CATEGORY_ORDER = [
    no backend) and mapped onto the same item shape as LIBRARY_ITEMS so they
    render through the existing card/filter logic without special-casing.
    The Sheet must be shared "Anyone with the link can view". */
-const LIBRARY_SHEET_ID = "REPLACE_WITH_SHEET_ID";
-const LIBRARY_SHEET_NAME = "Form Responses 1";
+const LIBRARY_SHEET_ID = "1uzVgUCPU_OOqyd0v7p15Xgeeq0lotIRG3ZZDK2XEhu0";
+const LIBRARY_SHEET_NAME = "Document Insertion Form (HA) (Responses)";
 const LIBRARY_SHEET_GVIZ_URL =
   `https://docs.google.com/spreadsheets/d/${LIBRARY_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(
     LIBRARY_SHEET_NAME
