@@ -451,24 +451,6 @@ h3 {
   pointer-events: none;
 }
 
-.library__oa {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--color-text);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.library__oa input {
-  width: 1.1rem;
-  height: 1.1rem;
-  accent-color: var(--color-brick);
-  cursor: pointer;
-}
-
 /* Category filter chips */
 .library__filters {
   display: flex;
