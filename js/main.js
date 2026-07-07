@@ -208,6 +208,10 @@ function setupSpeechToText(chatWindow) {
      and stream interim results so we can preview text live. */
   recognition.continuous = true;
   recognition.interimResults = true;
+  /* Keep listening through short pauses so speech isn't cut off mid-sentence,
+     and stream interim results so we can preview text live. */
+  recognition.continuous = true;
+  recognition.interimResults = true;
   recognition.maxAlternatives = 1;
 
   let listening = false;
@@ -216,9 +220,15 @@ function setupSpeechToText(chatWindow) {
   /* Finalised chunks are banked here so they're never lost, even as newer
      interim results come and go. */
   let finalTranscript = "";
+  /* Text already in the box before dictation started; dictation appends to it. */
+  let baseText = "";
+  /* Finalised chunks are banked here so they're never lost, even as newer
+     interim results come and go. */
+  let finalTranscript = "";
 
   mic.addEventListener("click", () => {
     if (listening) {
+      /* Stop now; the `end` handler commits whatever was captured. */
       /* Stop now; the `end` handler commits whatever was captured. */
       recognition.stop();
       return;
@@ -232,6 +242,8 @@ function setupSpeechToText(chatWindow) {
 
   recognition.addEventListener("start", () => {
     listening = true;
+    baseText = input.value.trim();
+    finalTranscript = "";
     baseText = input.value.trim();
     finalTranscript = "";
     mic.classList.add("is-listening");
@@ -257,6 +269,19 @@ function setupSpeechToText(chatWindow) {
     input.focus();
     reset();
   });
+  /* Combine the base text with the finalised + interim speech and show it,
+     keeping the input scrolled to the end so the newest words stay visible. */
+  const render = (interim = "") => {
+    const spoken = (finalTranscript + interim).trim();
+    input.value = baseText && spoken ? `${baseText} ${spoken}` : baseText || spoken;
+    input.scrollLeft = input.scrollWidth;
+  };
+
+  recognition.addEventListener("end", () => {
+    render();
+    input.focus();
+    reset();
+  });
 
   recognition.addEventListener("error", (event) => {
     reset();
@@ -268,6 +293,17 @@ function setupSpeechToText(chatWindow) {
   });
 
   recognition.addEventListener("result", (event) => {
+    let interim = "";
+    /* Bank any newly finalised chunks; collect the rest as live interim text. */
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const chunk = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += chunk + " ";
+      } else {
+        interim += chunk;
+      }
+    }
+    render(interim);
     let interim = "";
     /* Bank any newly finalised chunks; collect the rest as live interim text. */
     for (let i = event.resultIndex; i < event.results.length; i++) {
