@@ -203,7 +203,7 @@ function setupSpeechToText(chatWindow) {
   }
 
   const recognition = new SpeechRecognition();
-  recognition.lang = "en-US";
+  recognition.lang = "en-ZA";
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
 
@@ -234,15 +234,7 @@ function setupSpeechToText(chatWindow) {
   };
 
   recognition.addEventListener("end", reset);
-
-  recognition.addEventListener("error", (event) => {
-    reset();
-    if (event.error === "not-allowed") {
-      alert("Microphone permission was denied. Please allow microphone access in your browser settings.");
-    } else if (event.error !== "no-speech") {
-      alert("Speech recognition failed. Please try typing instead.");
-    }
-  });
+  recognition.addEventListener("error", reset);
 
   recognition.addEventListener("result", (event) => {
     const transcript = event.results[0][0].transcript;
