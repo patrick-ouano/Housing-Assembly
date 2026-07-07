@@ -84,9 +84,25 @@ function renderFooter() {
 function renderChatbot() {
   return `
     <div class="floating-widgets">
-      <button class="widget-btn widget-btn--chatbot" id="chatbot-toggle" aria-label="Open Chatbot" aria-controls="chat-window" aria-expanded="false">
-        <svg viewBox="0 0 512 512"><path d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/></svg>
-      </button>
+      <div class="chatbot-widget">
+        <button class="widget-btn widget-btn--chatbot" id="chatbot-toggle" aria-label="Open Chatbot" aria-controls="chat-window" aria-expanded="false">
+          <svg viewBox="0 0 512 512"><path d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/></svg>
+        </button>
+        <svg class="chatbot-arrow" viewBox="0 0 88 78" width="88" height="78" aria-hidden="true" focusable="false">
+          <defs>
+            <marker id="chatbot-arrowhead" markerWidth="18" markerHeight="13" refX="1" refY="6.5" orient="auto" markerUnits="userSpaceOnUse">
+              <polygon points="0,0 17,6.5 0,13" fill="currentColor"/>
+            </marker>
+          </defs>
+          <circle cx="16" cy="16" r="3" fill="currentColor"/>
+          <path d="M 16,16 C 46,2 72,22 52,54"
+                stroke="currentColor"
+                stroke-width="6"
+                fill="none"
+                stroke-linecap="butt"
+                marker-end="url(#chatbot-arrowhead)"/>
+        </svg>
+      </div>
     </div>
 
     <div class="chat-window" id="chat-window" aria-hidden="true">
