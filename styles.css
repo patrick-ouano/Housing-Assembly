@@ -778,7 +778,8 @@ h3 {
 
 .floating-widgets {
   position: fixed;
-  bottom: 24px;
+  /* Respect the iOS home indicator / Android gesture bar. */
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   right: 24px;
   z-index: 300;
   display: flex;
@@ -787,26 +788,47 @@ h3 {
 }
 
 .widget-btn {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 10px;
+  /* Fixed height keeps the touch target well above the 48px minimum in both
+     the expanded pill and the collapsed circle states. */
+  height: 56px;
+  padding: 0 22px;
   border: 0;
+  border-radius: 999px;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: padding 0.3s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
 .widget-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
-.widget-btn svg {
-  width: 28px;
-  height: 28px;
+.widget-btn__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.widget-btn__icon svg {
+  width: 26px;
+  height: 26px;
   fill: #fff;
+}
+
+.widget-btn__label {
+  max-width: 200px;
+  overflow: hidden;
+  opacity: 1;
+  transition: max-width 0.3s ease, opacity 0.2s ease;
 }
 
 .widget-btn--whatsapp {
@@ -816,6 +838,26 @@ h3 {
 
 .widget-btn--chatbot {
   background-color: var(--color-brick);
+}
+
+/* Collapsed state: icon-only circle (on scroll, or while the chat is open). */
+.widget-btn--chatbot.is-collapsed {
+  width: 56px;
+  padding: 0;
+  gap: 0;
+  justify-content: center;
+}
+
+.widget-btn--chatbot.is-collapsed .widget-btn__label {
+  max-width: 0;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .widget-btn,
+  .widget-btn__label {
+    transition: none;
+  }
 }
 
 .chat-window {
