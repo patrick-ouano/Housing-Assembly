@@ -32,46 +32,14 @@ function setupChatbot() {
 
   const isOpen = () => chatWindow.classList.contains("is-active");
 
-  const collapse = () => toggle.classList.add("is-collapsed");
-  const expand = () => toggle.classList.remove("is-collapsed");
-
-  /* Show the full "Chat with Blake" pill at the top of the page, and collapse
-     it to an icon-only circle once the user scrolls into the content so it
-     stops blocking what they're reading. Never changes while the chat is open
-     (it stays a circle then). */
-  const syncToScroll = () => {
-    if (isOpen()) return;
-    if (window.scrollY <= 8) expand();
-    else collapse();
-  };
-
   const toggleChat = () => {
     const isActive = chatWindow.classList.toggle("is-active");
     toggle.setAttribute("aria-expanded", String(isActive));
     chatWindow.setAttribute("aria-hidden", String(!isActive));
-    /* Transform into the small circle while open; restore based on scroll
-       position once closed. */
-    if (isActive) collapse();
-    else syncToScroll();
+    /* Collapse the pill into the small circle while the chat is open; restore
+       the full pill once it's closed. */
+    toggle.classList.toggle("is-collapsed", isActive);
   };
-
-  /* While scrolled, re-expand the pill after a short idle pause so its label is
-     available again once the user stops scrolling. */
-  const IDLE_MS = 2500;
-  let idleTimer;
-
-  window.addEventListener("scroll", () => {
-    if (isOpen()) return;
-    if (window.scrollY <= 8) {
-      expand();
-    } else {
-      collapse();
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => {
-        if (!isOpen()) expand();
-      }, IDLE_MS);
-    }
-  }, { passive: true });
 
   toggle.addEventListener("click", toggleChat);
   close?.addEventListener("click", toggleChat);
@@ -80,9 +48,6 @@ function setupChatbot() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && isOpen()) toggleChat();
   });
-
-  // Set the correct initial state in case the page loads already scrolled.
-  syncToScroll();
 
   setupSpeechToText(chatWindow);
   setupChatMessaging(chatWindow);
