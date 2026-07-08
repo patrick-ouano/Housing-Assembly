@@ -577,6 +577,16 @@ h3 {
   color: var(--color-charcoal);
 }
 
+.lib-card__type--policy {
+  background: #2f4f8f;
+  color: #fff;
+}
+
+.lib-card__type--political_education {
+  background: #6b2d6d;
+  color: #fff;
+}
+
 .lib-card__type--community {
   background: #3a7d44;
   color: #fff;
