@@ -203,14 +203,23 @@ function setupSpeechToText(chatWindow) {
   }
 
   const recognition = new SpeechRecognition();
-  recognition.lang = "en-ZA";
-  recognition.interimResults = false;
+  recognition.lang = "en-US";
+  /* Keep listening through short pauses so speech isn't cut off mid-sentence,
+     and stream interim results so we can preview text live. */
+  recognition.continuous = true;
+  recognition.interimResults = true;
   recognition.maxAlternatives = 1;
 
   let listening = false;
+  /* Text already in the box before dictation started; dictation appends to it. */
+  let baseText = "";
+  /* Finalised chunks are banked here so they're never lost, even as newer
+     interim results come and go. */
+  let finalTranscript = "";
 
   mic.addEventListener("click", () => {
     if (listening) {
+      /* Stop now; the `end` handler commits whatever was captured. */
       recognition.stop();
       return;
     }
@@ -223,6 +232,8 @@ function setupSpeechToText(chatWindow) {
 
   recognition.addEventListener("start", () => {
     listening = true;
+    baseText = input.value.trim();
+    finalTranscript = "";
     mic.classList.add("is-listening");
     mic.setAttribute("aria-label", "Stop listening");
   });
@@ -233,14 +244,41 @@ function setupSpeechToText(chatWindow) {
     mic.setAttribute("aria-label", "Speak your message");
   };
 
-  recognition.addEventListener("end", reset);
-  recognition.addEventListener("error", reset);
+  /* Combine the base text with the finalised + interim speech and show it,
+     keeping the input scrolled to the end so the newest words stay visible. */
+  const render = (interim = "") => {
+    const spoken = (finalTranscript + interim).trim();
+    input.value = baseText && spoken ? `${baseText} ${spoken}` : baseText || spoken;
+    input.scrollLeft = input.scrollWidth;
+  };
+
+  recognition.addEventListener("end", () => {
+    render();
+    input.focus();
+    reset();
+  });
+
+  recognition.addEventListener("error", (event) => {
+    reset();
+    if (event.error === "not-allowed") {
+      alert("Microphone permission was denied. Please allow microphone access in your browser settings.");
+    } else if (event.error !== "no-speech") {
+      alert("Speech recognition failed. Please try typing instead.");
+    }
+  });
 
   recognition.addEventListener("result", (event) => {
-    const transcript = event.results[0][0].transcript;
-    const existing = input.value.trim();
-    input.value = existing ? `${existing} ${transcript}` : transcript;
-    input.focus();
+    let interim = "";
+    /* Bank any newly finalised chunks; collect the rest as live interim text. */
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const chunk = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += chunk + " ";
+      } else {
+        interim += chunk;
+      }
+    }
+    render(interim);
   });
 }
 
