@@ -356,14 +356,18 @@ h3 {
   box-shadow: var(--shadow);
 }
 
-/* Standalone feature image inside a content section */
+/* Standalone feature image inside a content section.
+   Capped at 420px tall (the original banner height) but scaled down at its
+   natural aspect ratio so the whole photo stays visible instead of cropping. */
 .feature-image {
-  width: 100%;
+  display: block;
+  max-width: 100%;
   max-height: 420px;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  margin: 1.5rem auto;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  margin-block: 1.5rem;
 }
 
 /* Campaigns (About) — a balanced 2x2 grid of campaign cards */
