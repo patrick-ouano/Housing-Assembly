@@ -23,6 +23,8 @@ const TYPE_LABELS = {
   book: "Book",
   news: "News Article",
   academic: "Academic Article",
+  policy: "Policy Document",
+  political_education: "Political Education",
   community: "Community Submission",
 };
 
@@ -35,6 +37,8 @@ const CATEGORY_ORDER = [
   "Books",
   "In the News",
   "Activism, Organizing & Political Education",
+  "Legal Rights & Housing Law",
+  "Policy & Government Documents",
   "Gentrification, Evictions & Forced Removals",
   "Housing Policy & Economy",
   "Informal Settlements & Backyard Dwellings",
@@ -59,6 +63,8 @@ const SHEET_TYPE_MAP = {
   Book: "book",
   "News article": "news",
   "Academic article": "academic",
+  "Policy document": "policy",
+  "Political education": "political_education",
 };
 
 const COCT_LIBRARY_OPAC = "https://opac.capetown.gov.za";
