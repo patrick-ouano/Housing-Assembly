@@ -811,8 +811,22 @@ h3 {
 }
 
 .staff-card__phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: 0.9rem;
+  font-weight: 600;
   color: var(--color-brick);
+  text-decoration: none;
+}
+
+.staff-card__phone::before {
+  content: "📞";
+  font-size: 0.85rem;
+}
+
+.staff-card__phone:hover {
+  text-decoration: underline;
 }
 
 .staff-card__location {
