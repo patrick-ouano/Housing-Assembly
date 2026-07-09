@@ -105,6 +105,8 @@ function setupLightbox() {
 
   if (!lightbox || !lightboxImg || !grid) return;
 
+  const chatbotToggle = document.getElementById("chatbot-toggle");
+
   function open(src, title, description) {
     lightboxImg.src = src;
     lightboxImg.alt = title;
@@ -113,12 +115,14 @@ function setupLightbox() {
     lightboxCaption.hidden = !caption;
     lightbox.classList.add("is-open");
     lightbox.setAttribute("aria-hidden", "false");
+    if (chatbotToggle) chatbotToggle.style.display = "none";
   }
 
   function close() {
     lightbox.classList.remove("is-open");
     lightbox.setAttribute("aria-hidden", "true");
     lightboxImg.src = "";
+    if (chatbotToggle) chatbotToggle.style.display = "";
   }
 
   grid.addEventListener("click", (event) => {
