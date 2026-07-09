@@ -28,6 +28,8 @@ jobs:
           node --check js/components.js
           node --check js/gallery.js
           node --check js/library.js
+          node --check js/news.js
+          node --check js/contact.js
 
       - name: Validate HTML
         run: npx --yes html-validate "*.html"
