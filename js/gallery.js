@@ -1,24 +1,77 @@
 /* ==========================================================================
    Gallery grid + lightbox.
-   Thumbnails are rendered from data/gallery.json (kept in sync by the
-   Google Form -> n8n -> GitHub pipeline) rather than hardcoded in HTML.
-   Clicking a thumbnail opens the full image in an overlay.
+   Thumbnails are fetched from a Google Sheet (via the gviz/tq endpoint)
+   that is populated by a Google Form with an image file-upload question.
+   Clicking a thumbnail opens the full image in an overlay with caption.
+
+   Form question titles (must match Sheet column headers exactly):
+     "Title"       — short answer, required
+     "Image"       — file upload, images only, required
+     "Description" — short answer, optional
    ========================================================================== */
 
+/* Sheet must be shared "Anyone with the link → Viewer". Replace these with
+   the real values after creating the Form and linking it to a Sheet. */
+const GALLERY_SHEET_ID = "1FAFRQ9hHTrLzJmDxE5_bEYkZ14DfVX1NevPqwCVfx0E";
+const GALLERY_SHEET_NAME = "Form Responses 1";
+const GALLERY_SHEET_GVIZ_URL =
+  `https://docs.google.com/spreadsheets/d/${GALLERY_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(
+    GALLERY_SHEET_NAME
+  )}`;
+
+/* A Drive "view" share link (drive.google.com/file/d/<ID>/view) does not
+   render inside <img src>; rewrite it to a direct, embeddable form. */
+function driveFileUrlToEmbeddable(driveUrl) {
+  const match =
+    String(driveUrl || "").match(/\/file\/d\/([^/]+)/) ||
+    String(driveUrl || "").match(/[?&]id=([^&]+)/);
+  if (!match) return null;
+  return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+}
+
 async function loadGalleryItems() {
-  const response = await fetch("data/gallery.json");
-  if (!response.ok) throw new Error(`Failed to load gallery.json: ${response.status}`);
-  return response.json();
+  const response = await fetch(GALLERY_SHEET_GVIZ_URL);
+  if (!response.ok) throw new Error(`Failed to load gallery Sheet: ${response.status}`);
+  const text = await response.text();
+
+  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?\s*$/);
+  if (!match) throw new Error("Unexpected gviz response format");
+  const payload = JSON.parse(match[1]);
+
+  if (payload.status === "error") {
+    throw new Error(
+      `gviz error: ${(payload.errors || []).map((e) => e.detailed_message || e.message).join("; ")}`
+    );
+  }
+
+  const cols = payload.table.cols.map((c) => (c.label || "").trim());
+  const rows = payload.table.rows || [];
+
+  return rows
+    .map((row) => {
+      const obj = {};
+      cols.forEach((label, i) => {
+        const cell = row.c[i];
+        obj[label] = cell ? cell.f ?? cell.v ?? "" : "";
+      });
+      return {
+        title: String(obj["Title"] || "").trim(),
+        src: driveFileUrlToEmbeddable(obj["Image"]),
+        description: String(obj["Description"] || "").trim(),
+      };
+    })
+    .filter((item) => item.title && item.src);
 }
 
 function renderGalleryGrid(grid, items) {
   grid.innerHTML = items
     .map(
       (item) => `
-        <button class="gallery-grid__item" type="button" data-full="${escapeAttr(item.src)}" data-title="${escapeAttr(
-          item.title || ""
-        )}" data-description="${escapeAttr(item.description || "")}">
-          <img src="${escapeAttr(item.src)}" alt="${escapeAttr(item.title || "")}" loading="lazy">
+        <button class="gallery-grid__item" type="button"
+            data-full="${escapeAttr(item.src)}"
+            data-title="${escapeAttr(item.title)}"
+            data-description="${escapeAttr(item.description)}">
+          <img src="${escapeAttr(item.src)}" alt="${escapeAttr(item.title)}" loading="lazy">
         </button>`
     )
     .join("");
@@ -57,7 +110,6 @@ function setupLightbox() {
 
   closeBtn?.addEventListener("click", close);
 
-  /* Click the backdrop (but not the image) to close. */
   lightbox.addEventListener("click", (event) => {
     if (event.target === lightbox) close();
   });
