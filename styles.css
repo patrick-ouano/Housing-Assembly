@@ -377,6 +377,10 @@ h3 {
   gap: 1.25rem;
 }
 
+.communities-district-grid {
+  margin-top: 1.5rem;
+}
+
 .campaign-card {
   display: flex;
   flex-direction: column;
