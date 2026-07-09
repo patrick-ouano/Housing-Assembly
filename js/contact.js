@@ -32,8 +32,15 @@ async function loadContactItems() {
     );
   }
 
-  const cols = payload.table.cols.map((c) => (c.label || "").trim());
-  const rows = payload.table.rows || [];
+  let cols = payload.table.cols.map((c) => (c.label || "").trim());
+  let rows = payload.table.rows || [];
+
+  /* gviz sometimes returns parsedNumHeaders:0 and leaves column labels empty,
+     treating the header row as data. Detect this and promote row 0 to headers. */
+  if (cols.every((c) => c === "") && rows.length > 0) {
+    cols = rows[0].c.map((cell) => (cell ? String(cell.v ?? "") : ""));
+    rows = rows.slice(1);
+  }
 
   return rows
     .map((row) => {
