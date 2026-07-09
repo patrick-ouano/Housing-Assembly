@@ -697,6 +697,51 @@ h3 {
   margin-top: 0;
 }
 
+/* Staff directory (dynamically rendered from Google Sheet) */
+.staff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.staff-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-top: 4px solid var(--color-gold);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.staff-card__name {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--color-charcoal);
+}
+
+.staff-card__position {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-brick);
+}
+
+.staff-card__email {
+  font-size: 0.9rem;
+  color: var(--color-brick);
+  word-break: break-all;
+}
+
+.staff-card__location {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
 /* Gallery grid + lightbox */
 .gallery-grid {
   display: grid;
