@@ -342,46 +342,6 @@ async function setupLibrary() {
   render();
 }
 
-function newsletterSortKey(title) {
-  const match = String(title || "").match(/newsletter\s*(\d+)/i);
-  return match ? Number(match[1]) : Number.POSITIVE_INFINITY;
-}
-
-async function setupNewsletters() {
-  const list = document.getElementById("newsletter-list");
-  if (!list) return;
-
-  let allItems = [];
-  try {
-    allItems = await loadLibraryItems();
-  } catch (error) {
-    console.error(error);
-  }
-
-  const newsletters = allItems
-    .filter((item) => item.type === "newsletter")
-    .sort((a, b) => {
-      const numA = newsletterSortKey(a.title);
-      const numB = newsletterSortKey(b.title);
-      if (numA !== numB) return numA - numB;
-      return String(a.title).localeCompare(String(b.title));
-    });
-
-  list.innerHTML = newsletters
-    .map((item) => {
-      const href = (item.url && isSafeUrl(item.url)) ? item.url : null;
-      if (!href) {
-        return `<li>${escapeHtml(item.title)}</li>`;
-      }
-      const meta = item.meta ? `<span class="doc-list__size">${escapeHtml(item.meta)}</span>` : "";
-      return `<li>
-            <a href="${escapeAttr(href)}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a>
-            ${meta}
-          </li>`;
-    })
-    .join("");
-}
-
 function escapeHtml(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -395,7 +355,4 @@ function escapeAttr(value) {
 
 if (document.getElementById("library")) {
   setupLibrary();
-}
-if (document.getElementById("newsletter-list")) {
-  setupNewsletters();
 }
