@@ -112,12 +112,30 @@ function setupChatMessaging(chatWindow) {
   expireIfStale();
   const sessionId = getSessionId();
   const history = loadTranscript();
+  let markdownRendererConfigured = false;
+
+  /* Ensure bot Markdown links always open safely in a new tab. */
+  const ensureMarkdownRenderer = () => {
+    if (markdownRendererConfigured || !window.marked) return;
+
+    const renderer = new window.marked.Renderer();
+    renderer.link = ({ href, title, tokens }) => {
+      const text = window.marked.parseInline(tokens);
+      const safeHref = String(href || "#");
+      const titleAttr = title ? ` title="${String(title)}"` : "";
+      return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer"${titleAttr}>${text}</a>`;
+    };
+
+    window.marked.use({ renderer });
+    markdownRendererConfigured = true;
+  };
 
   /* Fill a bubble: user text stays literal (safe), while bot replies render
      Markdown, sanitised with DOMPurify to strip unsafe HTML before it hits
      the DOM. Falls back to plain text if the libraries fail to load. */
   const setBubbleContent = (bubble, text, sender) => {
     if (sender !== "user" && window.marked && window.DOMPurify) {
+      ensureMarkdownRenderer();
       bubble.classList.add("chat-msg--rich");
       bubble.innerHTML = window.DOMPurify.sanitize(
         window.marked.parse(text, { breaks: true })
