@@ -113,6 +113,10 @@ function dedupeSheetItems(items) {
   });
 }
 
+function isSafeUrl(url) {
+  return /^https?:\/\//i.test(url) || url.startsWith("/") || url.startsWith("files/");
+}
+
 function isCoctOpacUrl(url) {
   if (!url) return false;
   try {
@@ -252,10 +256,6 @@ async function setupLibrary() {
         )}">${escapeHtml(chip.label)}</button>`
     )
     .join("");
-
-  function isSafeUrl(url) {
-    return /^https?:\/\//i.test(url) || url.startsWith("/") || url.startsWith("files/");
-  }
 
   function linkFor(item) {
     if (item.url && isSafeUrl(item.url)) return item.url;
