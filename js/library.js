@@ -253,8 +253,12 @@ async function setupLibrary() {
     )
     .join("");
 
+  function isSafeUrl(url) {
+    return /^https?:\/\//i.test(url) || url.startsWith("/") || url.startsWith("files/");
+  }
+
   function linkFor(item) {
-    if (item.url) return item.url;
+    if (item.url && isSafeUrl(item.url)) return item.url;
     if (item.doi) return `https://doi.org/${item.doi}`;
     return null;
   }
@@ -365,7 +369,7 @@ async function setupNewsletters() {
 
   list.innerHTML = newsletters
     .map((item) => {
-      const href = item.url || null;
+      const href = (item.url && isSafeUrl(item.url)) ? item.url : null;
       if (!href) {
         return `<li>${escapeHtml(item.title)}</li>`;
       }
