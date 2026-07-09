@@ -30,10 +30,15 @@ function setupChatbot() {
 
   if (!toggle || !chatWindow) return;
 
+  const isOpen = () => chatWindow.classList.contains("is-active");
+
   const toggleChat = () => {
     const isActive = chatWindow.classList.toggle("is-active");
     toggle.setAttribute("aria-expanded", String(isActive));
     chatWindow.setAttribute("aria-hidden", String(!isActive));
+    /* Collapse the pill into the small circle while the chat is open; restore
+       the full pill once it's closed. */
+    toggle.classList.toggle("is-collapsed", isActive);
   };
 
   toggle.addEventListener("click", toggleChat);
@@ -41,7 +46,7 @@ function setupChatbot() {
 
   // Close on Escape key
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && chatWindow.classList.contains("is-active")) toggleChat();
+    if (e.key === "Escape" && isOpen()) toggleChat();
   });
 
   setupSpeechToText(chatWindow);

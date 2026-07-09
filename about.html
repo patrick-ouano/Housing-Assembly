@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>About — The Housing Assembly</title>
   <meta name="description" content="The Housing Assembly is a grassroots movement advocating for safe, dignified, and affordable housing for all in South Africa.">
   <meta property="og:title" content="About — The Housing Assembly">
@@ -23,18 +23,16 @@
     </section>
 
     <section class="section">
-      <div class="container split">
-        <div class="split__text">
-          <h2>Our Mission</h2>
-          <p>
-            The Housing Assembly is a nonprofit organization and a grassroots
-            movement committed to advocating for safe, dignified, and affordable
-            housing for all. We work alongside communities to raise awareness, share
-            knowledge, and mobilize around housing challenges, fostering collective
-            action to improve living conditions and uphold human dignity.
-          </p>
-        </div>
-        <img class="split__image" src="images\gallery-9.jpg" alt="Housing Assembly members gathered together">
+      <div class="container">
+        <h2 class="section__title">Our Mission</h2>
+        <p>
+          The Housing Assembly is a nonprofit organization and a grassroots
+          movement committed to advocating for safe, dignified, and affordable
+          housing for all. We work alongside communities to raise awareness, share
+          knowledge, and mobilize around housing challenges, fostering collective
+          action to improve living conditions and uphold human dignity.
+        </p>
+        <img class="feature-image" src="images\about-v2.png" alt="Housing Assembly members gathered together">
       </div>
     </section>
 
@@ -49,13 +47,52 @@
         </p>
       </div>
     </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section__title">Our Campaigns</h2>
+        <div class="campaign-grid">
+          <article class="campaign-card">
+            <h3 class="campaign-card__title">Waiting List Campaign</h3>
+            <p class="campaign-card__text">The campaign is about challenging the irregularities and inconsistent application of the Allocation Framework Policy. The campaign is divided into two parts: litigation and Community Data Collection.</p>
+            <p class="campaign-card__demand">
+              <span class="campaign-card__demand-label">Key Demand</span>
+              A Standard Waiting Period.
+            </p>
+          </article>
+
+          <article class="campaign-card">
+            <h3 class="campaign-card__title">Anti Eviction Campaign</h3>
+            <p class="campaign-card__text">This campaign is about resisting evictions, especially from but not exclusive to, Social Housing and Municipal Rental Units.</p>
+            <p class="campaign-card__demand">
+              <span class="campaign-card__demand-label">Key Demand</span>
+              Housing for Need, Not Profit.
+            </p>
+          </article>
+
+          <article class="campaign-card">
+            <h3 class="campaign-card__title">Quality Public Services Campaign</h3>
+            <p class="campaign-card__text">This campaign is about access to electricity, water, and toilets. Especially focusing on informal settlements and Backyarders.</p>
+            <p class="campaign-card__demand">
+              <span class="campaign-card__demand-label">Key Demand</span>
+              We need quality, not basic services
+            </p>
+          </article>
+
+          <article class="campaign-card campaign-card--placeholder" aria-hidden="true">
+            <span class="campaign-card__soon">Coming Soon</span>
+            <p class="campaign-card__text">Our fourth campaign will be announced here soon.</p>
+          </article>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer id="site-footer"></footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
-  <script src="js/components.js"></script>
-  <script src="js/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="js/main.js"></script>
 </body>
 </html>
