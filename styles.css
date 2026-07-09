@@ -810,10 +810,9 @@ h3 {
   color: var(--color-brick);
 }
 
-.staff-card__email {
+.staff-card__phone {
   font-size: 0.9rem;
   color: var(--color-brick);
-  word-break: break-all;
 }
 
 .staff-card__location {

@@ -52,7 +52,7 @@ async function loadContactItems() {
       return {
         name: String(obj["Name"] || "").trim(),
         position: String(obj["Position"] || "").trim(),
-        email: String(obj["Contact Email"] || "").trim(),
+        phone: String(obj["Contact Number"] || "").trim(),
         location: String(obj["Location"] || "").trim(),
       };
     })
@@ -60,8 +60,8 @@ async function loadContactItems() {
 }
 
 function staffCardHtml(item) {
-  const emailHtml = item.email
-    ? `<a class="staff-card__email" href="mailto:${escapeAttr(item.email)}">${escapeHtml(item.email)}</a>`
+  const phoneHtml = item.phone
+    ? `<a class="staff-card__phone" href="tel:${escapeAttr(item.phone)}">${escapeHtml(item.phone)}</a>`
     : "";
   const locationHtml = item.location
     ? `<p class="staff-card__location">${escapeHtml(item.location)}</p>`
@@ -70,7 +70,7 @@ function staffCardHtml(item) {
     <div class="staff-card">
       <h3 class="staff-card__name">${escapeHtml(item.name)}</h3>
       ${item.position ? `<p class="staff-card__position">${escapeHtml(item.position)}</p>` : ""}
-      ${emailHtml}
+      ${phoneHtml}
       ${locationHtml}
     </div>`;
 }
