@@ -19,14 +19,15 @@ const GALLERY_SHEET_GVIZ_URL =
     GALLERY_SHEET_NAME
   )}`;
 
-/* A Drive "view" share link (drive.google.com/file/d/<ID>/view) does not
-   render inside <img src>; rewrite it to a direct, embeddable form. */
+/* Extract the Drive file ID and rewrite the link to Drive's thumbnail API,
+   which serves the image directly into <img> tags without redirects or
+   virus-scan warning pages (which the older uc?export=view format triggers). */
 function driveFileUrlToEmbeddable(driveUrl) {
   const match =
-    String(driveUrl || "").match(/\/file\/d\/([^/]+)/) ||
+    String(driveUrl || "").match(/\/file\/d\/([^/?]+)/) ||
     String(driveUrl || "").match(/[?&]id=([^&]+)/);
   if (!match) return null;
-  return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1920`;
 }
 
 async function loadGalleryItems() {
@@ -54,6 +55,17 @@ async function loadGalleryItems() {
     rows = rows.slice(1);
   }
 
+  /* Find a value by exact column label first, then fall back to a
+     case-insensitive partial match — so minor Form question rewording
+     (e.g. "Upload the image…" instead of "Image") doesn't break parsing. */
+  function findCol(obj, exact, keyword) {
+    if (obj[exact] !== undefined && obj[exact] !== "") return obj[exact];
+    const key = Object.keys(obj).find(
+      (k) => k.toLowerCase().includes(keyword.toLowerCase())
+    );
+    return key ? obj[key] : "";
+  }
+
   return rows
     .map((row) => {
       const obj = {};
@@ -62,9 +74,9 @@ async function loadGalleryItems() {
         obj[label] = cell ? cell.f ?? cell.v ?? "" : "";
       });
       return {
-        title: String(obj["Title"] || "").trim(),
-        src: driveFileUrlToEmbeddable(obj["Image"]),
-        description: String(obj["Description"] || "").trim(),
+        title: String(findCol(obj, "Title", "title") || "").trim(),
+        src: driveFileUrlToEmbeddable(findCol(obj, "Image", "image")),
+        description: String(findCol(obj, "Description", "description") || "").trim(),
       };
     })
     .filter((item) => item.title && item.src);
