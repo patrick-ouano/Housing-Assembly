@@ -263,6 +263,7 @@ h3 {
 .hero__media {
   position: absolute;
   inset: 0;
+  background-image: url('images/home-2.jpg');
   background-size: cover;
   background-position: center;
   opacity: 0.35;
