@@ -5,7 +5,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://drive.google.com https://lh3.googleusercontent.com; connect-src 'self' https://docs.google.com https://n8n-production-3a960.up.railway.app; frame-src https://housingassemblymap.vercel.app https://www.backabuddy.co.za; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://drive.google.com https://lh3.googleusercontent.com; connect-src 'self' https://docs.google.com https://n8n-production-3a960.up.railway.app; frame-src https://housingassemblymap.vercel.app https://housingassemblyaudit.vercel.app https://www.backabuddy.co.za; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
         },
         {
           "key": "X-Frame-Options",
