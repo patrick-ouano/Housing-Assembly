@@ -101,6 +101,93 @@ function saveTranscript(history) {
   sessionStorage.setItem(UPDATED_AT_KEY, String(Date.now()));
 }
 
+/* Typewriter reveal pacing: ~65 chars/sec, but never longer than
+   REVEAL_MAX_MS in total so long replies speed up instead of dragging. */
+const REVEAL_TICK_MS = 30;
+const REVEAL_MIN_CHARS_PER_TICK = 2;
+const REVEAL_MAX_MS = 6000;
+
+/* Gradually reveals an already-rendered bot bubble, character by character.
+   The bubble's HTML is final before this runs; only text nodes are blanked
+   and refilled, so the markdown structure never reflows or flickers.
+   Returns a finish() function that completes the reveal instantly, or null
+   if no animation was started (reduced motion / empty reply). */
+function revealBotReply(bubble, body) {
+  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return null;
+
+  /* Text nodes in document order, each with its full text snapshotted and
+     the bubble's top-level block it belongs to (hidden until reached). */
+  const parts = [];
+  (function collect(node) {
+    for (const child of node.childNodes) {
+      if (child.nodeType === 3) {
+        let block = child;
+        while (block.parentNode !== bubble) block = block.parentNode;
+        parts.push({ node: child, fullText: child.nodeValue, block });
+      } else {
+        collect(child);
+      }
+    }
+  })(bubble);
+
+  const totalChars = parts.reduce((sum, p) => sum + p.fullText.length, 0);
+  if (totalChars === 0) return null;
+
+  parts.forEach((p) => {
+    p.node.nodeValue = "";
+    if (p.block !== p.node) p.block.hidden = true;
+  });
+  bubble.classList.add("chat-msg--revealing");
+
+  const charsPerTick = Math.max(
+    REVEAL_MIN_CHARS_PER_TICK,
+    Math.ceil((totalChars * REVEAL_TICK_MS) / REVEAL_MAX_MS)
+  );
+
+  let partIndex = 0;
+  let charIndex = 0;
+  let done = false;
+
+  /* Keep the newest text in view, but don't yank the user down if they
+     have scrolled up to read something earlier. */
+  const scrollIfPinned = () => {
+    if (body.scrollHeight - body.scrollTop - body.clientHeight < 48) {
+      body.scrollTop = body.scrollHeight;
+    }
+  };
+
+  const finish = () => {
+    if (done) return;
+    done = true;
+    clearInterval(timer);
+    parts.forEach((p) => {
+      p.node.nodeValue = p.fullText;
+      if (p.block !== p.node) p.block.hidden = false;
+    });
+    bubble.classList.remove("chat-msg--revealing");
+    body.scrollTop = body.scrollHeight;
+  };
+
+  const timer = setInterval(() => {
+    let budget = charsPerTick;
+    while (budget > 0 && partIndex < parts.length) {
+      const part = parts[partIndex];
+      if (charIndex === 0 && part.block !== part.node) part.block.hidden = false;
+      charIndex = Math.min(charIndex + budget, part.fullText.length);
+      budget -= charIndex - part.node.nodeValue.length;
+      part.node.nodeValue = part.fullText.slice(0, charIndex);
+      if (charIndex >= part.fullText.length) {
+        partIndex += 1;
+        charIndex = 0;
+      }
+    }
+    scrollIfPinned();
+    if (partIndex >= parts.length) finish();
+  }, REVEAL_TICK_MS);
+
+  return finish;
+}
+
 /* Sends typed/dictated messages to the n8n webhook and shows the reply. */
 function setupChatMessaging(chatWindow) {
   const body = chatWindow.querySelector(".chat-window__body");
@@ -112,6 +199,9 @@ function setupChatMessaging(chatWindow) {
   expireIfStale();
   const sessionId = getSessionId();
   const history = loadTranscript();
+
+  /* finish() of the reply currently being revealed, if any. */
+  let finishActiveReveal = null;
 
   /* Fill a bubble: user text stays literal (safe), while bot replies render
      Markdown, sanitised with DOMPurify to strip unsafe HTML before it hits
@@ -151,6 +241,10 @@ function setupChatMessaging(chatWindow) {
     const message = input.value.trim();
     if (message === "") return;
 
+    // A new message completes any still-animating reply instantly.
+    if (finishActiveReveal) finishActiveReveal();
+    finishActiveReveal = null;
+
     addMessage(message, "user");
     record(message, "user");
     input.value = "";
@@ -174,6 +268,7 @@ function setupChatMessaging(chatWindow) {
       pending.classList.remove("chat-msg--pending");
       setBubbleContent(pending, reply, "bot");
       record(reply, "bot");
+      finishActiveReveal = revealBotReply(pending, body);
     } catch (error) {
       pending.classList.remove("chat-msg--pending");
       pending.textContent = "Sorry, something went wrong. Please try again.";
