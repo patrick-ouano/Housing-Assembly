@@ -1145,31 +1145,6 @@ h3 {
   font-size: 0.85em;
 }
 
-/* Blinking caret shown while a bot reply is being revealed. */
-.chat-msg--revealing::after {
-  content: "";
-  display: inline-block;
-  width: 2px;
-  height: 1em;
-  margin-left: 2px;
-  background: currentColor;
-  vertical-align: text-bottom;
-  animation: chat-caret-blink 0.9s step-end infinite;
-}
-
-@keyframes chat-caret-blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .chat-msg--revealing::after {
-    animation: none;
-    content: none;
-  }
-}
-
 .chat-window__footer {
   padding: 1rem;
   border-top: 1px solid var(--color-border);
