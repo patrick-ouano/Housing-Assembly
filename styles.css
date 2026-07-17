@@ -947,11 +947,24 @@ h3 {
   font-size: 1rem;
   font-weight: 700;
   white-space: nowrap;
-  transition: padding 0.3s ease, background-color 0.2s ease, transform 0.2s ease;
+  /* Clip the label as the button collapses so it can't spill outside the
+     circle while it fades out. */
+  overflow: hidden;
+  /* Keep the geometry (width/padding/gap) snapping together so the icon lands
+     centered instead of jittering; only colour and hover scale animate. */
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .widget-btn:hover {
   transform: scale(1.05);
+}
+
+/* Once collapsed (chat open), don't scale on hover. As the pill shrinks into a
+   circle under the pointer, the hover state would otherwise flicker on/off and
+   make the button wiggle. */
+.widget-btn--chatbot.is-collapsed,
+.widget-btn--chatbot.is-collapsed:hover {
+  transform: none;
 }
 
 .widget-btn__icon {
@@ -971,7 +984,7 @@ h3 {
   max-width: 200px;
   overflow: hidden;
   opacity: 1;
-  transition: max-width 0.3s ease, opacity 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .widget-btn--whatsapp {
