@@ -769,6 +769,18 @@ h3 {
   position: static;
 }
 
+.embed__link {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.embed__link a {
+  color: var(--color-brick);
+  font-weight: 600;
+  word-break: break-word;
+}
+
 /* Contact details card */
 .contact-card {
   margin-top: 2rem;
