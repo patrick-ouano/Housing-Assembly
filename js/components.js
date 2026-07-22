@@ -6,7 +6,7 @@
    ========================================================================== */
 
 const NAV_LINKS = [
-  { label: "Home", href: "index.html" },
+  { label: "Home", href: "/" },
   { label: "About", href: "about.html" },
   { label: "News", href: "news.html" },
   { label: "Resources", href: "resources.html" },
@@ -22,7 +22,7 @@ const INSTAGRAM_URL = "https://www.instagram.com/thehousingassembly/?hl=en";
 /* Filename of the page we're on, used to highlight the active nav link. */
 function currentPage() {
   const file = window.location.pathname.split("/").pop();
-  return file === "" ? "index.html" : file;
+  return file === "" || file === "index.html" ? "/" : file;
 }
 
 function renderHeader() {
@@ -35,7 +35,7 @@ function renderHeader() {
 
   return `
     <div class="container site-header__inner">
-      <a class="brand" href="index.html">
+      <a class="brand" href="/">
         <img src="images/logo.png" alt="The Housing Assembly logo" width="52" height="52">
         <span class="brand__name">The Housing<br>Assembly</span>
       </a>
