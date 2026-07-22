@@ -7,22 +7,23 @@
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "About", href: "about.html" },
-  { label: "News", href: "news.html" },
-  { label: "Resources", href: "resources.html" },
-  { label: "Gallery", href: "gallery.html" },
-  { label: "Donate", href: "donate.html" },
-  { label: "Contact", href: "contact.html" },
+  { label: "About", href: "/about" },
+  { label: "News", href: "/news" },
+  { label: "Resources", href: "/resources" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Donate", href: "/donate" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const CONTACT_EMAIL = "info@housingassembly.org.za";
 const FACEBOOK_URL = "https://www.facebook.com/groups/housingassembly/";
 const INSTAGRAM_URL = "https://www.instagram.com/thehousingassembly/?hl=en";
 
-/* Filename of the page we're on, used to highlight the active nav link. */
+/* Path of the page we're on, used to highlight the active nav link.
+   Normalises away any .html extension so it matches the clean hrefs above. */
 function currentPage() {
-  const file = window.location.pathname.split("/").pop();
-  return file === "" || file === "index.html" ? "/" : file;
+  const path = window.location.pathname.replace(/\.html$/, "");
+  return path === "" || path === "/" || path === "/index" ? "/" : path;
 }
 
 function renderHeader() {
