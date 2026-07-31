@@ -50,16 +50,16 @@
 
 **The Housing Assembly** represents over 20 communities across the Western Cape. We work alongside residents living in informal settlements, backyards, temporary relocation areas, rental stock, and poorly built RDP housing to demand real solutions to housing inequality — as well as broader human rights issues like access to water and basic services.
 
-This repository holds the organisation's public website. It's a fast, framework-free static site that surfaces campaign information, news and newsletters, a searchable resource library, community mapping tools, donation support, and an AI housing assistant — all powered by lightweight Google Sheets and workflow integrations that non-technical staff can maintain.
+This site is the organisation's public web presence: campaign information, news and newsletters, a searchable resource library, community mapping tools, donation support, and an AI housing assistant. Day-to-day content is maintained through Google Forms and Sheets so staff can update the site without changing code.
 
 ---
 
 ## How It Works
 
 1. **Browse the site** — Visitors explore campaigns, news, the gallery, and resources across seven pages.
-2. **Search the library** — The Resources page loads a live, filterable catalogue of guides, books, news, and research from Google Sheets.
+2. **Search the library** — The Resources page offers a live, filterable catalogue of guides, books, news, and research.
 3. **Ask the AI assistant** — "Michael Blake" answers housing questions via a chat widget, with a WhatsApp fallback for direct contact.
-4. **Stay updated** — Newsletters and staff contacts are managed through Google Forms and Sheets, no code changes required.
+4. **Stay updated** — Newsletters and staff contacts are managed through Google Forms and Sheets.
 5. **Support the movement** — The Donate page embeds a BackaBuddy campaign for contributions.
 
 ---
@@ -81,26 +81,22 @@ This repository holds the organisation's public website. It's a fast, framework-
 ## Key Features
 
 - **AI Housing Assistant** — "Michael Blake", a RAG chatbot with speech-to-text dictation and a WhatsApp fallback.
-- **Searchable document library** — Filterable catalogue of guides, newsletters, books, news, and research, loaded live from Google Sheets.
-- **Shared layout** — Header, footer, navigation, and chat widget defined once in `js/components.js` and injected on every page.
+- **Searchable document library** — Filterable catalogue of guides, newsletters, books, news, and research.
+- **Shared layout** — Header, footer, navigation, and chat widget defined once and reused on every page.
 - **Sheet-driven content** — Newsletters and the staff directory are managed through Google Forms and Sheets, no deploys needed.
 - **Community tools** — Embedded community map and housing audit applications.
 - **Donations** — BackaBuddy campaign embed on the donate page.
-- **Hardened delivery** — Content Security Policy and security headers configured in `vercel.json`, with clean URLs (`/about` instead of `/about.html`).
+- **Hardened delivery** — Security headers and clean URLs on production hosting.
 
 ---
 
 ## AI Assistant — "Michael Blake"
 
-The chat widget lives on every page (built in `js/components.js`, wired up in `js/main.js`) and provides a Retrieval-Augmented Generation (RAG) housing assistant.
+The chat widget is available on every page and provides a Retrieval-Augmented Generation (RAG) housing assistant.
 
-- **Frontend** — Posts messages (`{ message, sessionId }`) to an **n8n** webhook and renders the Markdown reply, sanitised with DOMPurify.
-- **Workflow** — An **n8n** automation hosted on **Railway** orchestrates the RAG pipeline and conversation memory (keyed by session id).
-- **Knowledge base** — Housing resources embedded into a **Pinecone** vector index for semantic retrieval.
-- **Session continuity** — Transcripts persist in `sessionStorage` for the browsing session and reset when the tab closes.
-- **Accessibility** — Web Speech API dictation, keyboard support, and a WhatsApp link for direct contact.
-
-> The webhook URL is configured via `N8N_WEBHOOK_URL` in `js/main.js`. The n8n workflow and Pinecone index are managed outside this repository.
+- Visitors ask housing-related questions in the chat; replies are rendered as safe Markdown.
+- A workflow backend orchestrates retrieval from the organisation's knowledge base and keeps short-lived conversation context for the browsing session.
+- Speech-to-text dictation, keyboard support, and a WhatsApp link for direct contact are included for accessibility.
 
 ---
 
@@ -108,51 +104,21 @@ The chat widget lives on every page (built in `js/components.js`, wired up in `j
 
 ### Front End
 - **HTML5** — Static pages, one file per route
-- **CSS3** — Site-wide styles in `styles.css`
+- **CSS3** — Site-wide styles
 - **Vanilla JavaScript** — No framework or build step
-- **marked** + **DOMPurify** — Safe Markdown rendering in chat (via CDN)
 
 ### AI Assistant
-- **n8n** — Workflow automation orchestrating the RAG pipeline
-- **Railway** — Hosting for the n8n instance
+- **n8n** — Workflow automation for the RAG pipeline
+- **Railway** — Hosting for the workflow runtime
 - **Pinecone** — Vector database for semantic retrieval
-- **Web Speech API** — Browser-native speech-to-text
 
 ### Content & Data
-- **Google Sheets** — Resource library, newsletters, and staff directory (public viewer access via gviz)
+- **Google Sheets** — Resource library, newsletters, and staff directory
 - **Google Forms** — Content submission for library documents and newsletters
 
 ### Hosting & CI
-- **Vercel** — Production hosting, clean URLs, and security headers
-- **GitHub Actions** — Lint, HTML validation, and deploy on `main`
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (optional; used for the local static server and CI checks)
-- A modern web browser
-
-### Run locally
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/patrick-ouano/Housing-Assembly.git
-   cd Housing-Assembly
-   ```
-
-2. Serve the project root with any static file server:
-
-   ```bash
-   npx serve .
-   ```
-
-3. Open the URL printed in the terminal (typically `http://localhost:3000`).
-
-> **Note:** Features that fetch remote data (the library, newsletters, staff directory, and AI assistant) need a local server — opening the HTML files directly may block those requests. There is no install step or `.env` file for browsing the public site.
+- **Vercel** — Production hosting
+- **GitHub Actions** — Automated checks and deployment
 
 ---
 
@@ -170,14 +136,14 @@ Housing-Assembly/
 ├── styles.css              # Site-wide styles
 ├── js/
 │   ├── components.js       # Shared header, footer, nav, and chat widget
-│   ├── main.js             # Interactions + AI chatbot (n8n webhook)
-│   ├── library.js          # Document library (Google Sheet–backed)
-│   ├── news.js             # Newsletter list (Google Sheet–backed)
+│   ├── main.js             # Site interactions and chat UI
+│   ├── library.js          # Document library
+│   ├── news.js             # Newsletter list
 │   ├── gallery.js          # Gallery behaviour
-│   └── contact.js          # Staff directory (Google Sheet–backed)
+│   └── contact.js          # Staff directory
 ├── images/                 # Photos and logo
 ├── files/                  # Downloadable PDFs and documents
-├── vercel.json             # Clean URLs and security headers (CSP)
+├── vercel.json             # Hosting configuration
 ├── sitemap.xml
 ├── robots.txt
 └── .github/workflows/ci.yml
@@ -191,36 +157,19 @@ Most content updates require **no code changes** — they flow through Google Fo
 
 | What to change | Where |
 |----------------|--------|
-| Navigation or footer | `js/components.js` (single source of truth for all pages) |
+| Navigation or footer | Shared layout component (`js/components.js`) |
 | Page copy or layout | The relevant `.html` file |
 | Styles | `styles.css` |
-| Document library items | Housing Assembly Document Insertion Form (Google Form → Sheet) |
+| Document library items | Document Insertion Form (Google Form → Sheet) |
 | Newsletters | Newsletter Insertion Form (Google Form → Sheet) |
-| Staff directory | Contacts Google Sheet (`Name`, `Position`, `Contact Email`, `Location`) |
-| AI assistant behaviour | The n8n workflow on Railway + Pinecone index (external) |
-| Chatbot webhook | `N8N_WEBHOOK_URL` in `js/main.js` |
+| Staff directory | Contacts Google Sheet |
 | Static downloads | Add files under `files/` and link from the relevant page |
-
-See the comments at the top of `js/library.js`, `js/news.js`, and `js/contact.js` for the exact Sheet column requirements.
 
 ---
 
 ## CI / Deployment
 
-On every pull request and push to `main`, **GitHub Actions**:
-
-1. Checks JavaScript syntax (`node --check` on files under `js/`)
-2. Validates HTML with [`html-validate`](https://html-validate.org/)
-
-On push to `main` only, the workflow also builds and deploys to **Vercel**.
-
-Required repository secrets for deploy:
-
-| Secret | Purpose |
-|--------|---------|
-| `VERCEL_TOKEN` | Vercel authentication |
-| `VERCEL_ORG_ID` | Vercel organisation / team ID |
-| `VERCEL_PROJECT_ID` | Vercel project ID |
+Pull requests and pushes to `main` run automated checks (JavaScript syntax and HTML validation). Pushes to `main` also deploy the site to Vercel.
 
 ---
 
